@@ -6,10 +6,8 @@
 void *generate_random(void *arg){
 
     int iterations = *(int *)arg;
-    for (int i = 0; i < iterations; i++){
-        int num = rand() % 100 + 1;
-        printf("Random Number: %d\n", num);
-    }
+    int num = rand() % 100 + 1;
+    printf("Thread %lu: Random Number: %d\n", (unsigned long)pthread_self(), num);
 
     pthread_exit(0);
 }
@@ -23,7 +21,9 @@ int main(){
     scanf("%d", &iterations);
 
     srand(time(NULL));
-    pthread_create(&thread, NULL, generate_random, &iterations);
+    for (int i = 0; i < iterations; i++){
+        pthread_create(&thread, NULL, generate_random, &iterations);
+    }
     pthread_join(thread, NULL);
 
     return 0;
