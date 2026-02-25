@@ -14,77 +14,31 @@ Write programs to demonstrate multithreading in C using the pthread library, inc
 ## PROBLEM STATEMENT:
 
 
-### Theory:
 
-**Multithreading** is a technique where multiple threads (smaller units of a process) run concurrently within a single process, sharing memory and resources. Threads are lighter than processes and are ideal for parallel tasks, improving performance and CPU utilization.
+### Theory (Concise):
 
-**Thread vs Process:**
-- A process is an independent program in execution, with its own memory space.
-- A thread is a lightweight unit of execution within a process, sharing memory and resources with other threads.
+**Multithreading** allows multiple threads to run concurrently within a single process, sharing memory and resources. Threads are lightweight compared to processes and are ideal for parallel tasks, improving performance and CPU utilization.
+
+**Threads vs Processes:**
+- Threads share memory and resources within a process, while processes have separate memory spaces.
 - Threads are faster to create and switch between than processes.
 
 **pthread Library:**
 - The POSIX thread (pthread) library provides APIs for thread creation, synchronization, and management in C.
-- Threads share global and heap memory, but each has its own stack.
-- Common pthread functions: `pthread_create`, `pthread_join`, `pthread_exit`, `pthread_mutex`, etc.
+- Common functions: `pthread_create`, `pthread_join`, `pthread_exit`, `pthread_mutex`.
 
-**Advantages of Multithreading:**
-- Efficient CPU usage
-- Parallel execution of tasks
-- Shared memory space (easy data sharing)
-- Faster context switching than processes
+**Advantages:**
+- Efficient CPU usage, parallel execution, easy data sharing.
 
 **Challenges:**
-- Synchronization issues (race conditions)
-- Deadlocks if not managed properly
-- Debugging can be complex
+- Synchronization issues (race conditions), deadlocks, and debugging complexity.
 
 **Applications:**
-- Real-time systems, servers, GUI applications, scientific computing
+- Real-time systems, servers, GUIs, scientific computing, data processing, and more.
 
 **Key Concepts:**
-- Threads share global and heap memory
-- Each thread has its own stack
-- Threads can be created, joined, and synchronized
-- Useful for parallel computation and efficient CPU utilization
-
-### Theory of Thread:
-
-Pthreads, or POSIX threads, serves as a standardized approach to thread creation and synchronization, gaining support across a spectrum of operating systems like Linux, macOS, and iOS. In the realm of C programming, Pthreads offer a pathway for crafting multiple threads within a singular process. This concurrent execution enhances the program's overall efficiency.
-
-In single-threaded programs, a solitary flow of control prevails, executing tasks sequentially. This sequential execution becomes a bottleneck when a task consumes a considerable amount of time, forcing the program to patiently wait before moving on to the subsequent task. Conversely, the adoption of multi-threaded programs introduces a paradigm shift by enabling multiple tasks to unfold simultaneously in distinct threads. This approach fosters faster program completion times, as the CPU adeptly switches between diverse threads to maintain optimal utilization.
-
-Within the C programming landscape, the Pthreads library becomes instrumental by providing an arsenal of functions dedicated to the creation and management of threads. For instance, the `pthread_create` function facilitates the birth of a new thread, while the `pthread_join` function allows for the orderly waiting of a thread's completion. Moreover, Pthreads offers synchronization mechanisms like mutexes and condition variables, acting as guardians to ensure secure access to shared data structures amidst the tumult of multiple threads.
-
-However, treading into the domain of Pthreads in C necessitates vigilance regarding potential race conditions. These conditions arise when multiple threads concurrently access and modify shared data structures, often leading to unexpected outcomes. To avert such pitfalls, judicious use of proper synchronization mechanisms becomes imperative, ensuring a harmonious and error-free execution of multithreaded programs.
-
-The pthreads library in C provides several important functions for creating, managing, and synchronizing threads. Some of the most commonly used functions are:
-
-- `pthread_create`: Used to create a new thread. It takes as arguments the address of a pthread_t variable to store the thread identifier, a pointer to the thread's attributes (which can be set using `pthread_attr_init`), the address of the function that will run as the new thread, and an argument to pass to the thread function.
-- `pthread_join`: Used to wait for a thread to complete. It takes as arguments the thread identifier and a pointer to a location where the exit status of the thread can be stored.
-- `pthread_exit`: Used to terminate the calling thread. It takes as an argument a pointer to the exit status of the thread.
-- `pthread_mutex_init`: Used to initialize a mutex, which is a synchronization primitive that can be used to protect access to shared data structures.
-- `pthread_mutex_lock`: Used to lock a mutex, preventing other threads from accessing the protected data structure until the mutex is unlocked.
-- `pthread_mutex_unlock`: Used to unlock a mutex, allowing other threads to access the protected data structure.
-- `pthread_cond_init`: Used to initialize a condition variable, which is a synchronization primitive that can be used to signal between threads.
-- `pthread_cond_wait`: Used to wait on a condition variable. It takes as arguments a pointer to a mutex that is associated with the condition variable, and a pointer to the condition variable.
-- `pthread_cond_signal`: Used to signal a condition variable, waking up a thread that is waiting on it.
-
-**Uses of Multithreading:**
-- User Interface Responsiveness
-- Web Servers
-- Data Processing and Analysis
-- Game Development
-- Database Operations
-- Network Applications
-- Image and Video Processing
-- Parallelizing Batch Processing
-
-**Key Concepts:**
-- Threads share global and heap memory
-- Each thread has its own stack
-- Threads can be created, joined, and synchronized
-- Useful for parallel computation and efficient CPU utilization
+- Threads share global/heap memory, each has its own stack.
+- Useful for parallel computation and efficient CPU utilization.
 
 
 ---
@@ -104,6 +58,17 @@ The pthreads library in C provides several important functions for creating, man
 7. Print average, maximum, and median
 8. Free allocated memory and exit
 
+
+### For Program 2 (exp4-2.c - Random Number Generation):
+1. Start the program
+2. Prompt user to enter the number of random numbers to generate (or number of threads, depending on version)
+3. For the single-threaded version:
+    - Create a thread that generates and prints n random numbers in a loop
+    - Main thread waits for the random number thread to finish
+4. For the multi-threaded version:
+    - Create n threads, each generating and printing one random number
+    - Main thread waits for all threads to finish
+5. Exit
 
 ### For Program 3 (exp4-3.c - Countdown Timer):
 1. Start the program
@@ -221,98 +186,8 @@ int main(){
 }
 ```
 
-### File 2: exp4-2.c (Random Number Generation)
-### File 3: exp4-3.c (Countdown Timer)
-```c
-#include <stdio.h>
-#include <stdlib.h>
-#include <pthread.h>
-#include <unistd.h>
+### File 2: exp4-2.c (Random Number Generation - Single Thread)
 
-void *countdown(void *arg) {
-    int seconds = *(int *)arg;
-    for (int i = seconds; i > 0; i--) {
-        printf("Time remaining: %d seconds\n", i);
-        sleep(1);
-    }
-    printf("Timer finished!\n");
-    pthread_exit(0);
-}
-
-int main() {
-    pthread_t timer_thread;
-    int seconds;
-    printf("Enter countdown seconds: ");
-    scanf("%d", &seconds);
-    pthread_create(&timer_thread, NULL, countdown, &seconds);
-    pthread_join(timer_thread, NULL);
-    return 0;
-}
-```
-
-### File 4: exp4-4.c (Multithreaded Keyword Search)
-```c
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <pthread.h>
-
-struct SearchArgs {
-    const char *filename;
-    const char *keyword;
-    long start;
-    long end;
-    int count;
-};
-
-void *search_file(void *arg) {
-    struct SearchArgs *args = (struct SearchArgs *)arg;
-    FILE *file = fopen(args->filename, "r");
-    if (!file) {
-        perror("File open error");
-        pthread_exit(0);
-    }
-    fseek(file, args->start, SEEK_SET);
-    char line[1024];
-    int local_count = 0;
-    long pos = args->start;
-    while (pos < args->end && fgets(line, sizeof(line), file)) {
-        if (strstr(line, args->keyword)) local_count++;
-        pos = ftell(file);
-    }
-    args->count = local_count;
-    fclose(file);
-    pthread_exit(0);
-}
-
-int main() {
-    char filename[256], keyword[64];
-    printf("Enter filename: ");
-    scanf("%s", filename);
-    printf("Enter keyword: ");
-    scanf("%s", keyword);
-    FILE *file = fopen(filename, "r");
-    if (!file) {
-        perror("File open error");
-        return 1;
-    }
-    fseek(file, 0, SEEK_END);
-    long filesize = ftell(file);
-    fclose(file);
-    long mid = filesize / 2;
-    struct SearchArgs args1 = {filename, keyword, 0, mid, 0};
-    struct SearchArgs args2 = {filename, keyword, mid, filesize, 0};
-    pthread_t t1, t2;
-    pthread_create(&t1, NULL, search_file, &args1);
-    pthread_create(&t2, NULL, search_file, &args2);
-    pthread_join(t1, NULL);
-    pthread_join(t2, NULL);
-    int total = args1.count + args2.count;
-    printf("Keyword '%s' found %d times in total.\n", keyword, total);
-    printf("Thread 1 found %d, Thread 2 found %d.\n", args1.count, args2.count);
-    return 0;
-}
-```
 ```c
 #include <stdio.h>
 #include <stdlib.h>
@@ -342,6 +217,140 @@ int main(){
 
 ---
 
+### File 2 (Alternative): exp4-2.c (Random Number Generation - Multi-Threaded, Each Thread One Number)
+
+This alternative approach demonstrates creating `n` threads, each generating one random number. This is different from the original, where a single thread generated all `n` numbers.
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <pthread.h>
+#include <time.h>
+
+#define MAX_THREADS 1000
+
+void* generate_random(void* arg) {
+    int idx = *(int*)arg;
+    int num = rand() % 100 + 1;
+    printf("Thread %d generated: %d\n", idx, num);
+    free(arg);
+    pthread_exit(NULL);
+}
+
+int main() {
+    int n;
+    printf("Enter number of random numbers (threads to create): ");
+    scanf("%d", &n);
+    if (n > MAX_THREADS) {
+        printf("Too many threads! Max allowed: %d\n", MAX_THREADS);
+        return 1;
+    }
+    pthread_t threads[MAX_THREADS];
+    srand(time(NULL));
+    for (int i = 0; i < n; i++) {
+        int* idx = malloc(sizeof(int));
+        *idx = i + 1;
+        if (pthread_create(&threads[i], NULL, generate_random, idx) != 0) {
+            perror("pthread_create");
+            return 1;
+        }
+    }
+    for (int i = 0; i < n; i++) {
+        pthread_join(threads[i], NULL);
+    }
+    return 0;
+}
+```
+
+#### Explanation of the Alternative Version
+
+- **Original (Single Thread):** One thread generates all `n` random numbers in a loop.
+- **Alternative (Multi-Threaded):** `n` threads are created, each responsible for generating and printing one random number.
+- **Benefits:**
+    - Demonstrates thread creation and management.
+    - Shows parallelism, though for such a simple task, overhead may outweigh benefits for large `n`.
+- **Drawbacks:**
+    - Thread creation overhead is significant for large `n`.
+    - Not efficient for trivial tasks, but useful for learning thread basics.
+
+Both versions are kept for comparison and learning purposes.
+
+---
+
+### File 3: exp4-3.c (Countdown Timer)
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <pthread.h>
+    srand(time(NULL));
+    pthread_create(&thread, NULL, generate_random, &iterations);
+    pthread_join(thread, NULL);
+    return 0;
+}
+```
+
+---
+
+### File 2 (Alternative): exp4-2.c (Random Number Generation - Multi-Threaded, Each Thread One Number)
+
+This alternative approach demonstrates creating `n` threads, each generating one random number. This is different from the original, where a single thread generated all `n` numbers.
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <pthread.h>
+#include <time.h>
+
+#define MAX_THREADS 1000
+
+void* generate_random(void* arg) {
+    int idx = *(int*)arg;
+    int num = rand() % 100 + 1;
+    printf("Thread %d generated: %d\n", idx, num);
+    free(arg);
+    pthread_exit(NULL);
+}
+
+int main() {
+    int n;
+    printf("Enter number of random numbers (threads to create): ");
+    scanf("%d", &n);
+    if (n > MAX_THREADS) {
+        printf("Too many threads! Max allowed: %d\n", MAX_THREADS);
+        return 1;
+    }
+    pthread_t threads[MAX_THREADS];
+    srand(time(NULL));
+    for (int i = 0; i < n; i++) {
+        int* idx = malloc(sizeof(int));
+        *idx = i + 1;
+        if (pthread_create(&threads[i], NULL, generate_random, idx) != 0) {
+            perror("pthread_create");
+            return 1;
+        }
+    }
+    for (int i = 0; i < n; i++) {
+        pthread_join(threads[i], NULL);
+    }
+    return 0;
+}
+```
+
+#### Explanation of the Alternative Version
+
+- **Original (Single Thread):** One thread generates all `n` random numbers in a loop.
+- **Alternative (Multi-Threaded):** `n` threads are created, each responsible for generating and printing one random number.
+- **Benefits:**
+    - Demonstrates thread creation and management.
+    - Shows parallelism, though for such a simple task, overhead may outweigh benefits for large `n`.
+- **Drawbacks:**
+    - Thread creation overhead is significant for large `n`.
+    - Not efficient for trivial tasks, but useful for learning thread basics.
+
+Both versions are kept for comparison and learning purposes.
+
+---
+
 ## COMPILATION AND EXECUTION:
 
 From the exp4 folder, run the following commands to compile and execute each program:
@@ -368,6 +377,25 @@ Maximum = 9
 Median = 5.00
 ```
 
+### Program 2 (exp4-2.c) - Random Number Generation Output:
+```
+Enter number of iterations: 5
+Random Number: 42
+Random Number: 17
+Random Number: 88
+Random Number: 3
+Random Number: 56
+```
+
+```
+Enter number of random numbers (threads to create): 5
+Thread 1 generated: 42
+Thread 2 generated: 17
+Thread 3 generated: 88
+Thread 4 generated: 3
+Thread 5 generated: 56
+```
+
 ### Program 3 (exp4-3.c) - Countdown Timer Output:
 ```
 Enter countdown seconds: 5
@@ -386,14 +414,7 @@ Enter keyword: hello
 Keyword 'hello' found 7 times in total.
 Thread 1 found 3, Thread 2 found 4.
 ```
-```
-Enter number of iterations: 5
-Random Number: 42
-Random Number: 17
-Random Number: 88
-Random Number: 3
-Random Number: 56
-```
+
 
 ---
 
@@ -409,6 +430,42 @@ Random Number: 56
 - Shows how threads can be used to perform independent tasks simultaneously.
 - Median calculation uses sorting and handles both even and odd number of elements.
 - No explicit synchronization is needed as each thread writes to its own variable.
+
+### Program 2 (exp4-2.c)
+- **Single Thread Version:**
+    - A single thread is created, which generates and prints `n` random numbers in a loop.
+    - Demonstrates basic thread creation and argument passing using `pthread_create`.
+    - The main thread waits for the random number thread to finish using `pthread_join`.
+    - Useful for understanding how to offload a repetitive task to a thread.
+
+- **Multi-Threaded Version (Alternative):**
+    - `n` threads are created, each responsible for generating and printing one random number.
+    - Each thread receives its own index as an argument and prints its result.
+    - Demonstrates thread creation, argument passing, and memory management (each thread receives a dynamically allocated argument).
+    - Shows parallelism, but also highlights the overhead of creating many threads for simple tasks.
+    - Useful for learning thread basics and understanding the trade-offs of thread granularity.
+
+Both versions illustrate different approaches to using threads for random number generation.
+
+---
+
+### Program 2 (exp4-2.c)
+- **Single Thread Version:**
+    - A single thread is created, which generates and prints `n` random numbers in a loop.
+    - Demonstrates basic thread creation and argument passing using `pthread_create`.
+    - The main thread waits for the random number thread to finish using `pthread_join`.
+    - Useful for understanding how to offload a repetitive task to a thread.
+
+- **Multi-Threaded Version (Alternative):**
+    - `n` threads are created, each responsible for generating and printing one random number.
+    - Each thread receives its own index as an argument and prints its result.
+    - Demonstrates thread creation, argument passing, and memory management (each thread receives a dynamically allocated argument).
+    - Shows parallelism, but also highlights the overhead of creating many threads for simple tasks.
+    - Useful for learning thread basics and understanding the trade-offs of thread granularity.
+
+Both versions illustrate different approaches to using threads for random number generation.
+
+---
 
 ### Program 3 (exp4-3.c)
 - Uses a thread to implement a countdown timer.
